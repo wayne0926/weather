@@ -4,6 +4,39 @@ import requests
 import ntplib
 import datetime
 import prettytable as pt
+# import os
+# import time
+
+# PING_RESULT = 0
+# NETWORK_RESULT = 0
+
+# def DisableNetwork():
+#     ''' disable network card '''
+#     result = os.system(u"netsh interface set interface 以太网 disable")
+#     if result == 1:
+#         print("disable network card failed")
+#     else:
+#         print("disable network card successfully")
+
+# def ping():
+#     ''' ping 主备网络 '''
+#     result = os.system(u"ping restapi.amap.com ")
+#     #result = os.system(u"ping www.baidu.com -n 3")
+#     if result == 0:
+#         print("A网正常")
+#     else:
+#         print("网络故障")
+#     return result
+ 
+ 
+# if __name__ == '__main__':
+#     while True:
+#         PING_RESULT = ping()
+ 
+#         if PING_RESULT == 0:
+#             time.sleep(20)
+#         else:
+#             DisableNetwork()
 # 位置，天气，时间赋值
 # 设置高德API秘钥
 p = {'key': '91feef17aa2cd875a61f7520dd30207a'}
@@ -25,12 +58,6 @@ if t == '1':
     # GET获取API返回的JSON并取回“city”（城市），然后赋值给“place”
     s = requests.get('https://restapi.amap.com/v3/weather/weatherInfo', params=p).json()
     f = requests.get('https://restapi.amap.com/v3/weather/weatherInfo', params=p1).json()
-    # ['lives'][0]['city']
-    # GET获取API返回的JSON并取回“weather”（天气（中文提示）），然后赋值给“we”
-    # we = requests.get('https://restapi.amap.com/v3/weather/weatherInfo', params=p).json()['lives'][0]['weather']
-    # GET获取API返回的JSON并取回“temperature”（温度），然后赋值给“tem”
-    # tem = requests.get('https://restapi.amap.com/v3/weather/weatherInfo', params=p).json()['lives'][0]['temperature'] + '℃'
-    # 汇总天气（中文提示）与温度，并赋值给“wea”
     city = s['lives'][0]['city']
     # 今日
     dweather = s['lives'][0]['weather']
@@ -44,14 +71,30 @@ if t == '1':
     tntemp = f['forecasts'][0]['casts'][1]['nighttemp'] + '℃'
     twind = f['forecasts'][0]['casts'][1]['daywind']
     twindd = f['forecasts'][0]['casts'][1]['daypower']
-tb = pt.PrettyTable()
-tb.field_names = ["位置", "时间", "日间天气", "日间温度", "日间风向", "日间风力", "晚间天气", "晚间温度"]
-tb.add_row([city, "今日", dweather, dtemp, dwindd, dwind, '×', '×'])
-tb.add_row([city, "明天", tdweather, tdtemp, twind, twindd, tnweather, tntemp])
-tb.add_row([city, "后天", 112, 120900, 1714.7, 1, 1, 1])
-tb.add_row([city, "大后天", 1357, 205556, 619.5, 1, 1, 1])
-
-print(tb)
+    # 后天
+    hdweather = f['forecasts'][0]['casts'][2]['dayweather']
+    hnweather = f['forecasts'][0]['casts'][2]['nightweather']
+    hdtemp = f['forecasts'][0]['casts'][2]['daytemp'] + '℃'
+    hntemp = f['forecasts'][0]['casts'][2]['nighttemp'] + '℃'
+    hwind = f['forecasts'][0]['casts'][2]['daywind']
+    hwindd = f['forecasts'][0]['casts'][2]['daypower']
+    # 大后天
+    dhdweather = f['forecasts'][0]['casts'][3]['dayweather']
+    dhnweather = f['forecasts'][0]['casts'][3]['nightweather']
+    dhdtemp = f['forecasts'][0]['casts'][3]['daytemp'] + '℃'
+    dhntemp = f['forecasts'][0]['casts'][3]['nighttemp'] + '℃'
+    dhwind = f['forecasts'][0]['casts'][3]['daywind']
+    dhwindd = f['forecasts'][0]['casts'][3]['daypower']
+    # 汇入总表
+    tb = pt.PrettyTable()
+    tb.field_names = ["位置", "时间", "日间天气", "日间温度", "日间风向", "日间风力", "晚间天气", "晚间温度"]
+    tb.add_row([city, "今日", dweather, dtemp, dwindd, dwind, '×', '×'])
+    tb.add_row([city, "明天", tdweather, tdtemp, twind, twindd, tnweather, tntemp])
+    tb.add_row([city, "后天", hdweather, hdtemp, hwind, hwindd, hnweather, hntemp])
+    tb.add_row([city, "大后天", dhdweather, dhdtemp, dhwind, dhwindd, dhnweather, dhntemp])
+    print(tb)
+else:
+    print('网络连接错误')
 # print("="*100)
 # print(f)
 # print("="*100)
