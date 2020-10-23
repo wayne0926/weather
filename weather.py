@@ -32,22 +32,27 @@ if t == '1':
     # tem = requests.get('https://restapi.amap.com/v3/weather/weatherInfo', params=p).json()['lives'][0]['temperature'] + '℃'
     # 汇总天气（中文提示）与温度，并赋值给“wea”
     city = s['lives'][0]['city']
+    # 今日
     dweather = s['lives'][0]['weather']
     dtemp = s['lives'][0]['temperature'] + '℃'
     dwind = s['lives'][0]['windpower']
     dwindd = s['lives'][0]['winddirection']
+    # 明日
     tdweather = f['forecasts'][0]['casts'][1]['dayweather']
     tnweather = f['forecasts'][0]['casts'][1]['nightweather']
+    tdtemp = f['forecasts'][0]['casts'][1]['daytemp'] + '℃'
+    tntemp = f['forecasts'][0]['casts'][1]['nighttemp'] + '℃'
+    twind = f['forecasts'][0]['casts'][1]['daywind']
+    twindd = f['forecasts'][0]['casts'][1]['daypower']
 tb = pt.PrettyTable()
 tb.field_names = ["位置", "时间", "日间天气", "日间温度", "日间风向", "日间风力", "晚间天气", "晚间温度"]
 tb.add_row([city, "今日", dweather, dtemp, dwindd, dwind, '×', '×'])
-tb.add_row([city, "明天", tdweather, 1857594, 1146.4, 1, tnweather, 1])
+tb.add_row([city, "明天", tdweather, tdtemp, twind, twindd, tnweather, tntemp])
 tb.add_row([city, "后天", 112, 120900, 1714.7, 1, 1, 1])
 tb.add_row([city, "大后天", 1357, 205556, 619.5, 1, 1, 1])
 
 print(tb)
-print("="*150)
-print(f)
-print("="*150)
-print(s)
-print(city)
+# print("="*100)
+# print(f)
+# print("="*100)
+# print(s)
