@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+# 作者：魏然
+# 最后修改时间：2020/10/23
 import requests
 import prettytable as pt
 # 位置，天气，时间赋值
