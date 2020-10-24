@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # 作者：魏然
-# 最后修改时间：2020/10/23
+# 最后修改时间：2020/10/24
 import requests
 import prettytable as pt
 # 位置，天气，时间赋值
@@ -19,10 +19,10 @@ else:
     pCode = requests.get('https://restapi.amap.com/v3/ip', params=p).json()['adcode']
 # 判断是否成功（是否为“1”），若不成功（不等于“1”）
 if t == '1':
-    # 设置高德API秘钥以及位置编码
+    # 设置高德API秘钥以及位置编码和获取值（实时及预报）
     p = {'city': pCode, 'key': '91feef17aa2cd875a61f7520dd30207a', 'extensions': 'base'}
     p1 = {'city': pCode, 'key': '91feef17aa2cd875a61f7520dd30207a', 'extensions': 'all'}
-    # GET获取API返回的JSON并取回“city”（城市），然后赋值给“place”
+    # GET获取API返回的JSON并取回JSON，然后赋值给“s”和“f”
     s = requests.get('https://restapi.amap.com/v3/weather/weatherInfo', params=p).json()['lives'][0]
     f = requests.get('https://restapi.amap.com/v3/weather/weatherInfo', params=p1).json()['forecasts'][0]['casts']
     city = s['city']
@@ -31,6 +31,7 @@ if t == '1':
     dtemp = s['temperature'] + '℃'
     dwind = s['windpower']
     dwindd = s['winddirection']
+    dd = f[0]['date']
     # 明日
     tdweather = f[1]['dayweather']
     tnweather = f[1]['nightweather']
@@ -38,6 +39,7 @@ if t == '1':
     tntemp = f[1]['nighttemp'] + '℃'
     twind = f[1]['daywind']
     twindd = f[1]['daypower']
+    td = f[1]['date']
     # 后天
     hdweather = f[2]['dayweather']
     hnweather = f[2]['nightweather']
@@ -45,6 +47,7 @@ if t == '1':
     hntemp = f[2]['nighttemp'] + '℃'
     hwind = f[2]['daywind']
     hwindd = f[2]['daypower']
+    hd = f[2]['date']
     # 大后天
     dhdweather = f[3]['dayweather']
     dhnweather = f[3]['nightweather']
@@ -52,13 +55,14 @@ if t == '1':
     dhntemp = f[3]['nighttemp'] + '℃'
     dhwind = f[3]['daywind']
     dhwindd = f[3]['daypower']
+    dhd = f[3]['date']
     # 汇入总表
     tb = pt.PrettyTable()
     tb.field_names = ["位置", "时间", "日间天气", "日间温度", "日间风向", "日间风力", "晚间天气", "晚间温度"]
-    tb.add_row([city, "今日", dweather, dtemp, dwindd, dwind, '×', '×'])
-    tb.add_row([city, "明天", tdweather, tdtemp, twind, twindd, tnweather, tntemp])
-    tb.add_row([city, "后天", hdweather, hdtemp, hwind, hwindd, hnweather, hntemp])
-    tb.add_row([city, "大后天", dhdweather, dhdtemp, dhwind, dhwindd, dhnweather, dhntemp])
+    tb.add_row([city, "今日(" + dd + ")", dweather, dtemp, dwindd, dwind, '×', '×'])
+    tb.add_row([city, "明天(" + td + ")", tdweather, tdtemp, twind, twindd, tnweather, tntemp])
+    tb.add_row([city, "后天(" + hd + ")", hdweather, hdtemp, hwind, hwindd, hnweather, hntemp])
+    tb.add_row([city, "大后天(" + dhd + ")", dhdweather, dhdtemp, dhwind, dhwindd, dhnweather, dhntemp])
     print(tb)
 else:
     print('网络连接错误')
